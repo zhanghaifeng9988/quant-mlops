@@ -1,0 +1,20 @@
+[project]
+name = "quant-mlops-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ipykernel>=7.4.0",
+    "jupyter>=1.1.1",
+    "pandas>=3.0.6",
+    "pyarrow>=26.0.0",
+    "yfinance>=1.7.0",
+]
+
+[project.scripts]
+quant-mlops-project = "quant_mlops_project:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

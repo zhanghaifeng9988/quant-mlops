@@ -9,7 +9,8 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-data/
+data/raw/
+data/processed/
 # Jupyter Notebook
 .ipynb_checkpoints/
 *.ipynb_checkpoints
@@ -32,11 +33,13 @@ data/
 venv/
 env/
 ENV/
-.venv
+.venv/
 API.txt
 **/.venv/
 **/__pycache__/
-
+mlruns/
+.pytest_cache/
+.ruff_cache/
 
 # IDE
 .vscode/
