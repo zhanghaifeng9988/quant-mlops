@@ -18,7 +18,7 @@ data/processed/
 # Data files (太大的数据文件不要上传)
 **/monitor/data/
 **/monitor/grafana/
-# *.csv
+*.csv
 *.xlsx
 *.parquet
 *.pkl
@@ -28,6 +28,7 @@ data/processed/
 *.hdf5
 *.onnx
 *.bin
+*.db
 # Environment
 .env
 venv/
