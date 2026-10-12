@@ -47,5 +47,8 @@
 - test IC 0.0091 ± 0.0056，RankIC 0.0112 ± 0.0124
 - best_iter 1-23，说明信号弱，但pipeline完整，评估体系可靠
 - 结论：MLOps 骨架完整，策略信号弱是数据问题，不是工程问题
-
+### 过程记录：
+- quant-mlops-project/notebooks/01_env_data_clean.ipynb 
+- quant-mlops-project/notebooks/02_feature_point_in_time.ipynb 
+- quant-mlops-project/notebooks/03_split_training_mlfow.ipynb
 
