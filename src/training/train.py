@@ -35,16 +35,18 @@ def split_by_fold(df, train_end, valid_end, test_end):
 
 # 计算每日IC -- Information Coefficient（信息系数）
 # 预测值和真实收益之间的相关性——预测得越准，IC 越高。
-def daily_corr(df, pred_col, label_col, method="pearson", min_n=3):
+def daily_corr(df, pred_col, label_col, method="pearson", min_n=30):
     vals = []
     for _, g in df.groupby("date"): # 按date分组，g循环获取每一天得dataframe。下划线表示不使用该变量，默认是date
-        if len(g) >= min_n: # 当天股票数至少要有 min_n=3 只，才计算相关系数。
+        if len(g) >= min_n: # 当天股票数至少要有 min_n=30 只，才计算相关系数。
             v = g[pred_col].corr(g[label_col], method=method)
             if not np.isnan(v):
                 vals.append(v)
     return float(np.mean(vals)) if vals else float("nan")
 
 # 评估指标
+# IC 衡量预测值与真实收益的日内相关性，
+# RankIC 衡量预测值与真实收益的日内相关性，但考虑了预测值的排名。RankIC 用秩相关，对异常值更鲁棒，也更贴近选股场景。
 def evaluate(df, pred_col="pred"):
     rmse = float(np.sqrt(mean_squared_error(df["label"], df[pred_col])))
     ic = daily_corr(df, pred_col, "label", "pearson")
@@ -54,7 +56,7 @@ def evaluate(df, pred_col="pred"):
 
 def main():
     mlflow.set_tracking_uri('sqlite:///mlflow.db')
-    mlflow.set_experiment("quant-mlops-walkforward")
+    mlflow.set_experiment(EXPERIMENT_NAME)
 
     df = pd.read_parquet(FEATURES_DIR / "features.parquet")
 
@@ -94,10 +96,26 @@ def main():
                 train[FEATURE_COLS], train["label"],
                 eval_set=[(valid[FEATURE_COLS], valid["label"])],
                 eval_metric="rmse",
-                callbacks=[lgb.early_stopping(50), lgb.log_evaluation(50)], # 验证 RMSE 连续 50 轮不改善就停止训练  关闭训练日志（0 表示不打印）
+                callbacks=[lgb.early_stopping(50), lgb.log_evaluation(50)], # 验证 RMSE 连续 50 轮不改善就停止训练  50轮显示一次日志（0 表示关闭训练日志，不打印）
             )
 
-            fold_result = {"fold": i, "best_iter": model.best_iteration_}
+            #  记录 feature importance (gain) 
+            importance = pd.DataFrame({
+                "feature": FEATURE_COLS,
+                "gain": lgbm_regressor_model.booster_.feature_importance(importance_type="gain"),
+            }).sort_values("gain", ascending=False).reset_index(drop=True)
+
+            print("  feature importance (gain):")
+            print(importance.to_string(index=False).replace("\n", "\n  "))
+
+            for _, row in importance.iterrows():
+                mlflow.log_metric(f"gain_{row['feature']}", row["gain"])
+
+            importance_path = FEATURES_DIR / f"importance_fold{i}.csv"
+            importance.to_csv(importance_path, index=False)
+            
+            # best_iteration_ = 验证集 RMSE 最低时，模型建到第几棵树。
+            fold_result = {"fold": i, "best_iter": lgbm_regressor_model.best_iteration_}
            
             # 对训练集、验证集、测试集三段做统一评估
             for name, split_df in [("train", train), ("valid", valid), ("test", test)]:
@@ -109,10 +127,10 @@ def main():
                 fold_result.update({f"{name}_{k}": v for k, v in m.items()})
                 print(f"{name}: rmse={m['rmse']:.5f}  ic={m['ic']:.4f}  rank_ic={m['rank_ic']:.4f}")
 
-            mlflow.lightgbm.log_model(lgbm_regressor_model, name="model",artifact_path="models_mlflow")
+            mlflow.lightgbm.log_model(lgbm_regressor_model, name="models_mlflow")
             all_results.append(fold_result)
-
-    # summary
+    
+    # summary 
     print("\n=== Summary ===")
     res_df = pd.DataFrame(all_results)
     print(res_df.to_string(index=False))
@@ -122,3 +140,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

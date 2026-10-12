@@ -1,4 +1,4 @@
-# 数据清洗/合并脚本——把 10 只股票的原始 parquet 合并成一个统一的 prices.parquet，
+# 数据清洗/合并脚本——把 100 只股票的原始 parquet 合并成一个统一的 prices.parquet，
 # 并做基础校验
 
 from pathlib import Path
@@ -7,8 +7,18 @@ import pandas as pd
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 
-TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA",
-           "META", "TSLA", "JPM", "V", "UNH"]
+""" tickers = [
+    "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "BRK-B", "LLY", "AVGO", "TSLA",
+    "JPM", "V", "UNH", "XOM", "MA", "JNJ", "PG", "COST", "HD", "MRK",
+    "ABBV", "CVX", "WMT", "AMD", "PEP", "KO", "ADBE", "CRM", "BAC", "NFLX",
+    "TMO", "LIN", "MCD", "ACN", "CSCO", "ABT", "GE", "WFC", "QCOM", "INTU",
+    "TXN", "DHR", "AMGN", "CAT", "PM", "VZ", "IBM", "NOW", "UBER", "PFE",
+    "RTX", "SPGI", "AXP", "GS", "ISRG", "HON", "T", "NEE", "BKNG", "LOW",
+    "UNP", "COP", "ELV", "BLK", "SYK", "TJX", "VRTX", "MDT", "C", "REGN",
+    "PLD", "CB", "MRSH", "ADP", "BSX", "GILD", "AMAT", "CI", "DE", "BMY",
+    "ADI", "MDLZ", "SBUX", "BA", "LMT", "SCHW", "MO", "SO", "DUK", "INTC",
+    "ZTS", "CVS", "PGR", "FISV", "MU", "PYPL", "EQIX", "KLAC", "ICE", "CME",
+] """
 
 # 加载单个股票数据,处理时间字段
 def load_one(ticker: str) -> pd.DataFrame:
@@ -21,7 +31,12 @@ def load_one(ticker: str) -> pd.DataFrame:
 def main():
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-    frames = [load_one(t) for t in TICKERS]
+    tickers = sorted(p.stem for p in RAW_DIR.glob("*.parquet"))
+    print(f"found {len(tickers)} tickers")
+    if not tickers:
+        raise RuntimeError(f"no parquet found in {RAW_DIR}")
+
+    frames = [load_one(t) for t in tickers]
     df = pd.concat(frames, ignore_index=True)
 
     # 统一 schema   只保留这 7 列，且按列表给定的顺序排列。

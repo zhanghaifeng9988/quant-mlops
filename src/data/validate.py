@@ -3,8 +3,7 @@ import pandas as pd
 
 RAW_DIR = Path("data/raw")
 
-# 把 10 个 raw parquet 合成一张干净的、可校验的、带元数据的表。
-# #这一步决定后面特征能不能做对。
+# 验证 raw 数据是否符合要求
 
 
 def validate_one(ticker: str) -> dict:
