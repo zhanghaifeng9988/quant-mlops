@@ -15,7 +15,7 @@
 
 **结果**：test IC 0.0091，RankIC 0.0112。
 
-**可讲**：数据泄漏处理、walk-forward、point-in-time 特征、best_iter 诊断。
+**难点**：数据泄漏处理、walk-forward、point-in-time 特征、best_iter 诊断。
 
 ---
 
@@ -26,12 +26,12 @@
 | 里程碑 | 产出 | 状态 |
 |--------|------|------|
 | 1. 模型注册 | MLflow Model Registry，alias 管理（champion/candidate） | ✅ |
-| 2. 模型服务 | FastAPI REST API | 进行中 |
+| 2. 模型服务 | FastAPI REST API |  ✅ |
 | 3. Docker 化 | Dockerfile + docker-compose | 待做 |
 | 4. 监控与漂移检测 | 预测分布、特征分布记录，Evidently 或自写脚本 | 待做 |
 | 5. 自动重训练 | Prefect 定时触发，漂移超阈值自动重训练并评估替换 | 待做 |
 
-**可讲**：alias 管理模型生命周期、training-serving skew、漂移阈值定义。
+**难点**：alias 管理模型生命周期、training-serving skew、漂移阈值定义。
 
 ---
 
@@ -45,7 +45,7 @@
 | 2. K8s 配置 | Deployment, Service, Ingress, ConfigMap, Secret, PV, HPA |
 | 3. CI/CD | GitHub Actions：push 后跑测试、构建镜像、部署 |
 
-**可讲**：K8s 资源配置、CI/CD 模型版本处理、规模扩大后的瓶颈。
+**难点**：K8s 资源配置、CI/CD 模型版本处理、规模扩大后的瓶颈。
 
 ---
 
@@ -59,7 +59,7 @@
 | 2. 策略回测支撑 | 最小回测链路：预测 → 选股 → 净值曲线，输出年化/夏普/回撤 |
 | 3. 另类数据实验 | 公开另类数据（舆情/趋势）接入，验证平台的扩展能力 |
 
-**可讲**：training-serving skew 与 Feature Store、平台如何服务研究员、从预测到策略的闭环。
+**难点**：training-serving skew 与 Feature Store、平台如何服务研究员、从预测到策略的闭环。
 
 ---
 
