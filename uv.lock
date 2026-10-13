@@ -3817,6 +3817,7 @@ name = "quant-mlops-project"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "fastapi" },
     { name = "ipykernel" },
     { name = "jupyter" },
     { name = "lightgbm" },
@@ -3824,11 +3825,13 @@ dependencies = [
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "scikit-learn" },
+    { name = "uvicorn" },
     { name = "yfinance" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi", specifier = ">=0.143.0" },
     { name = "ipykernel", specifier = ">=7.4.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "lightgbm", specifier = ">=4.7.0" },
@@ -3836,6 +3839,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=3.0.6" },
     { name = "pyarrow", specifier = ">=14,<20" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
     { name = "yfinance", specifier = ">=1.7.0" },
 ]
 

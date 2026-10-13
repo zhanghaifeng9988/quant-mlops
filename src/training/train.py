@@ -5,6 +5,7 @@ import lightgbm as lgb
 import mlflow
 import mlflow.lightgbm
 from sklearn.metrics import mean_squared_error
+from datetime import datetime
 
 FEATURES_DIR = Path("data/features")
 EXPERIMENT_NAME = "quant-mlops-walkforward"
@@ -58,6 +59,9 @@ def main():
     mlflow.set_tracking_uri('sqlite:///mlflow.db')
     mlflow.set_experiment(EXPERIMENT_NAME)
 
+    batch_id = datetime.now().strftime("%Y%m%d-%H%M%S")
+    print(f"batch_id: {batch_id}\n")
+
     df = pd.read_parquet(FEATURES_DIR / "features.parquet")
 
     params = {
@@ -86,6 +90,7 @@ def main():
 
         with mlflow.start_run(run_name=f"fold-{i}") as run:
             mlflow.set_tag("fold", i) # 每个 Fold 是一个独立的 MLflow run，名字 fold-1 ~ fold-5。
+            mlflow.set_tag("batch_id", batch_id)
             mlflow.log_params(params)
             mlflow.log_param("train_end", train_end)
             mlflow.log_param("valid_end", valid_end)
@@ -127,7 +132,8 @@ def main():
                 fold_result.update({f"{name}_{k}": v for k, v in m.items()})
                 print(f"{name}: rmse={m['rmse']:.5f}  ic={m['ic']:.4f}  rank_ic={m['rank_ic']:.4f}")
 
-            mlflow.lightgbm.log_model(lgbm_regressor_model, name="models_mlflow")
+            model_info = mlflow.lightgbm.log_model(lgbm_regressor_model, name="model")
+            mlflow.set_tag("model_uri", model_info.model_uri)
             all_results.append(fold_result)
     
     # summary 
@@ -136,7 +142,7 @@ def main():
     print(res_df.to_string(index=False))
     print(f"\nTest IC mean: {res_df['test_ic'].mean():.4f} ± {res_df['test_ic'].std():.4f}")
     print(f"Test RankIC mean: {res_df['test_rank_ic'].mean():.4f} ± {res_df['test_rank_ic'].std():.4f}")
-
+    print(f"\nbatch_id: {batch_id}  (用于注册时定位本次训练的 run)")
 
 if __name__ == "__main__":
     main()
