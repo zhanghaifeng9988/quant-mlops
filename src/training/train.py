@@ -1,3 +1,4 @@
+# 横截面收益预测的机器学习任务
 from pathlib import Path
 import pandas as pd
 import numpy as np

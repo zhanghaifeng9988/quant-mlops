@@ -25,15 +25,15 @@
 
 | 里程碑 | 产出 | 状态 |
 |--------|------|------|
-| 1. 模型注册 | MLflow Model Registry，alias 管理（champion/candidate） | ✅ |
-| 2. 模型服务 | FastAPI REST API |  ✅ |
-| 3. Docker 化 | Dockerfile + docker-compose | 待做 |
-| 4. 监控与漂移检测 | 预测分布、特征分布记录，Evidently 或自写脚本 | 待做 |
-| 5. 自动重训练 | Prefect 定时触发，漂移超阈值自动重训练并评估替换 | 待做 |
+| 1. 模型注册 | MLflow Model Registry，alias 管理（champion=v2/fold1，candidate=v3/fold5） | ✅ |
+| 2. 模型服务 | FastAPI REST API，/health /model/info /predict | ✅ |
+| 3. Docker 化 | Dockerfile，镜像 quant-mlops-serving | ✅ |
+| 4. Docker Compose 统一管理 | serving + postgres + grafana 一键拉起 | 进行中 |
+| 5. 监控与漂移检测 | 4 类指标（服务健康/模型性能/数据质量/漂移），PG 存储 + Grafana 可视化 | 进行中 |
+| 6. 自动重训练 | Prefect 定时触发，漂移超阈值自动重训练并评估替换 | 待做 |
 
-**难点**：alias 管理模型生命周期、training-serving skew、漂移阈值定义。
+**难点**：alias 管理模型生命周期、training-serving skew、容器化部署、4 类监控指标体系。
 
----
 
 ## 阶段三：K8s 部署 + CI/CD
 

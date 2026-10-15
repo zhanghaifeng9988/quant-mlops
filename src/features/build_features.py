@@ -61,7 +61,7 @@ def main():
 
     # 去掉窗口不足和 label 缺失的行
     before = len(df)
-    df = df.dropna(subset=feature_cols + ["label"]).reset_index(drop=True) # 删掉有nan值的行，重建所以，丢弃原索引值
+    df = df.dropna(subset=feature_cols + ["label"]).reset_index(drop=True) # 删掉有nan值的行，重建索引，丢弃原索引值
     after = len(df)
     print(f"dropped {before - after} rows (warmup + label NaN), kept {after}")
 

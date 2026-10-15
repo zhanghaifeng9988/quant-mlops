@@ -23,3 +23,6 @@ quant-mlops-project = "quant_mlops_project:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+package = false

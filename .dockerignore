@@ -1,0 +1,10 @@
+.venv/
+.git/
+mlruns/.trash/
+data/raw/
+data/processed/
+notebooks/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
