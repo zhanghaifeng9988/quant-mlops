@@ -1,10 +1,10 @@
 from pathlib import Path
 import pandas as pd
-
-RAW_DIR = Path("data/raw")
+# __file__ 是脚本自己的绝对路径,parents[2] 从脚本位置往上数两级
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+RAW_DIR = PROJECT_ROOT / "data" / "raw"
 
 # 验证 raw 数据是否符合要求
-
 
 def validate_one(ticker: str) -> dict:
     df = pd.read_parquet(RAW_DIR / f"{ticker}.parquet")

@@ -10,7 +10,7 @@ FEATURE_COLS = [
 ]
 
 df = pd.read_parquet(PROCESSED_DIR / "features.parquet")
-
+# IC = 因子值 与 未来收益 的相关性。
 def main():
     for f in FEATURE_COLS:
         ic = df.groupby("date").apply(lambda g: g[f].corr(g["label"])).mean()

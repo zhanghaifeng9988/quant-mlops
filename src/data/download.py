@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2])) # 为了让 src 目录下的模块能被导入，就是from src.data.tickers import SP100 可以成功
 import yfinance as yf
 import pandas as pd
 from src.data.tickers import SP100
